@@ -3,3 +3,7 @@
 ################################################################################
 
 /JoccBotV2/bin/Debug/net5.0
+/JoccBotV2/obj/Debug/net5.0
+/JoccBotV2/obj
+/JoccBotV2/.vs/JoccBotV2
+/JoccBotV2/appsettings.json
