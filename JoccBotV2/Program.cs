@@ -34,13 +34,19 @@ namespace JoccBotV2
         private CommandService _commands;
 
         /// <summary>
+        /// Defines the _lavaConfig.
+        /// </summary>
+        private LavaConfig _lavaConfig;
+
+        /// <summary>
+        /// Defines the _lavaNode.
+        /// </summary>
+        private LavaNode _lavaNode;
+
+        /// <summary>
         /// Defines the _services.
         /// </summary>
         private IServiceProvider _services;
-
-        private LavaNode _lavaNode;
-
-        private LavaConfig _lavaConfig;
 
         #endregion
 
@@ -83,6 +89,18 @@ namespace JoccBotV2
         internal static void Main(string[] args) => new Program().RunBotAsync().GetAwaiter().GetResult();
 
         /// <summary>
+        /// The OnReadyAsync.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
+        private async Task OnReadyAsync()
+        {
+            if (!_lavaNode.IsConnected)
+            {
+                await _lavaNode.ConnectAsync();
+            }
+        }
+
+        /// <summary>
         /// The RegisterCommandsAsync.
         /// </summary>
         /// <returns>The <see cref="Task"/>.</returns>
@@ -100,7 +118,7 @@ namespace JoccBotV2
         {
             _client = new DiscordSocketClient();
             _commands = new CommandService();
-            _lavaConfig = new LavaConfig(){ SelfDeaf = true };
+            _lavaConfig = new LavaConfig() { SelfDeaf = true };
             _lavaNode = new LavaNode(_client, _lavaConfig);
 
             _services = new ServiceCollection()
@@ -128,14 +146,6 @@ namespace JoccBotV2
             await _client.StartAsync();
 
             await Task.Delay(-1);
-        }
-
-        private async Task OnReadyAsync()
-        {
-            if (!_lavaNode.IsConnected)
-            {
-                await _lavaNode.ConnectAsync();
-            }
         }
 
         #endregion

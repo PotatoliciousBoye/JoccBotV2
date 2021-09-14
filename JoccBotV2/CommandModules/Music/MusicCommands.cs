@@ -1,22 +1,43 @@
 ﻿using Discord;
 using Discord.Commands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Victoria;
 using Victoria.Enums;
 
 namespace JoccBotV2.CommandModules.Music
 {
+    /// <summary>
+    /// Defines the <see cref="MusicCommands" />.
+    /// </summary>
     public class MusicCommands : ModuleBase<SocketCommandContext>
     {
+        #region Fields
+
+        /// <summary>
+        /// Defines the _lavaNode.
+        /// </summary>
         private readonly LavaNode _lavaNode;
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MusicCommands"/> class.
+        /// </summary>
+        /// <param name="lavaNode">The lavaNode<see cref="LavaNode"/>.</param>
         public MusicCommands(LavaNode lavaNode)
             => _lavaNode = lavaNode;
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The JoinAsync.
+        /// </summary>
+        /// <returns>The <see cref="Task"/>.</returns>
         [Command("Join")]
         public async Task JoinAsync()
         {
@@ -44,6 +65,11 @@ namespace JoccBotV2.CommandModules.Music
             }
         }
 
+        /// <summary>
+        /// The PlayAsync.
+        /// </summary>
+        /// <param name="query">The query<see cref="string"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
         [Command("Play")]
         public async Task PlayAsync([Remainder] string query)
         {
@@ -84,5 +110,7 @@ namespace JoccBotV2.CommandModules.Music
                 await ReplyAsync($"Now Playing: {track.Title}");
             }
         }
+
+        #endregion
     }
 }
