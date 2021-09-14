@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Victoria;
 
 namespace JoccBotV2
 {
@@ -37,6 +38,10 @@ namespace JoccBotV2
         /// </summary>
         private IServiceProvider _services;
 
+        private LavaNode _lavaNode;
+
+        private LavaConfig _lavaConfig;
+
         #endregion
 
         #region Methods
@@ -46,7 +51,7 @@ namespace JoccBotV2
         /// </summary>
         /// <param name="arg">The arg<see cref="LogMessage"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        private Task _client_Log(LogMessage arg)
+        private Task ClientLog(LogMessage arg)
         {
             Console.WriteLine(arg);
             return Task.CompletedTask;
@@ -95,10 +100,14 @@ namespace JoccBotV2
         {
             _client = new DiscordSocketClient();
             _commands = new CommandService();
+            _lavaConfig = new LavaConfig(){ SelfDeaf = true };
+            _lavaNode = new LavaNode(_client, _lavaConfig);
 
             _services = new ServiceCollection()
                 .AddSingleton(_client)
                 .AddSingleton(_commands)
+                .AddSingleton(_lavaConfig)
+                .AddSingleton(_lavaNode)
                 .BuildServiceProvider();
 
             _configuration = new ConfigurationBuilder()
@@ -108,7 +117,9 @@ namespace JoccBotV2
 
             string token = _configuration.GetSection("BotToken").Value;
 
-            _client.Log += _client_Log;
+            _client.Log += ClientLog;
+
+            _client.Ready += OnReadyAsync;
 
             await RegisterCommandsAsync();
 
@@ -117,6 +128,14 @@ namespace JoccBotV2
             await _client.StartAsync();
 
             await Task.Delay(-1);
+        }
+
+        private async Task OnReadyAsync()
+        {
+            if (!_lavaNode.IsConnected)
+            {
+                await _lavaNode.ConnectAsync();
+            }
         }
 
         #endregion
